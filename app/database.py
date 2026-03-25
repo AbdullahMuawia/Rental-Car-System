@@ -1,5 +1,18 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
+import os
+
+
+DATABASE_URL = os.getenv(
+    "DATABASE_URL",
+    "postgresql://postgres:postgres@db:5432/rental_db",
+)
+
+engine = create_engine(DATABASE_URL)
+
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+Base = declarative_base()
 
 def get_db():
     db = SessionLocal()
@@ -7,12 +20,3 @@ def get_db():
         yield db
     finally:
         db.close()
-
-
-database_url = "postgresql://postgres:postgres@localhost/rental_db"
-
-engine = create_engine(database_url)
-
-SessionLocal = sessionmaker(bind=engine)
-
-Base = declarative_base()
